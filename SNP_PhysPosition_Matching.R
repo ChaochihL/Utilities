@@ -15,9 +15,9 @@
 #   Stores arguments into a vector
 args <- commandArgs(trailingOnly = TRUE)
 
-#   A function to read in snp_info.txt file format
-readFileSnpInfo <- function(filename) {
-    data.file <- read.delim(
+#   A function to read in positions_file.txt format
+readFilePos <- function(filename) {
+    data.file <- read.table(
         file = filename, # passed as an argument
         header = TRUE, # First line is a header
         fill = TRUE, # Fill empty fields with NAs
@@ -26,9 +26,9 @@ readFileSnpInfo <- function(filename) {
     return(data.file)
 }
 
-#   A function to read in positions_file.txt format
-readFilePos <- function(filename) {
-    data.file <- read.table(
+#   A function to read in snp_info.txt file format
+readFileSnpInfo <- function(filename) {
+    data.file <- read.delim(
         file = filename, # passed as an argument
         header = TRUE, # First line is a header
         fill = TRUE, # Fill empty fields with NAs

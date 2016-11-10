@@ -1,7 +1,7 @@
 #   This script adds an additional physical positions column to a given file. Physical positions are added based on matching SNP names between two files.
 #   Takes three arguments:
 #   1) positions_file.txt: includes SNP names and Physical positions columns
-#   2) snp_info.txt: new column of physical positions will be added to this file
+#   2) snp_info.txt: new column of physical positions will be added to this file (i.e. HarvEST SNP_BAC.txt)
 #   3) Output filename
 #   Script written by Chaochih Liu
 #   July 21, 2016

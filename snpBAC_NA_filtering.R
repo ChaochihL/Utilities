@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 #   This script removes all rows with empty cells in Query_SNP column and missing info for PhysPos column.
 #   Takes one argument:
     #   1) SNP_BAC.txt file that includes PhysPos and Chr_2016 columns

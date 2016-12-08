@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-#   This script converts columns in dataframe to genotypes
+#   This script converts columns in dataframe to genotype format accepted by LDheatmap R package.
 #   Depends on R package: genetics
 #   Script written by Chaochih Liu
 #   November 28, 2016

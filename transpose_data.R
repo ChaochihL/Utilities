@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 #   This script is a small function that transposes dataframes
 #   and outputs a new transposed file
 #   Script written by Chaochih Liu

@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 #   This script randomly selects SNP names from a given list
 #   Script written by Chaochih Liu
 #   June 17, 2016

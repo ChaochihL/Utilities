@@ -4,13 +4,14 @@
 #   June 13, 2016
 
 #   To run the script: Rscript ./transpose_data.R <data.txt>
-
+#   This script assumes the 1st cell in the header contains text.
 
 #   Read in data and create data frame from it
 #   Transpose data
 #   Read in file without row.names = 1 to prevent manually shifting first row of cells over one cell
 readFile <- function(filename) {
-    transposedData <- t(read.delim(file = filename))
+    transposedData <- t(read.delim(file = filename,
+                                   header = FALSE))
     return(transposedData)
 }
 
@@ -23,7 +24,8 @@ writeOutFile <- function(transposedData, filename) {
                 quote = FALSE,
                 sep = "\t",
                 eol = "\n",
-                col.names = FALSE)
+                col.names = FALSE,
+                row.names = FALSE)
 }
 
 #   Run the script

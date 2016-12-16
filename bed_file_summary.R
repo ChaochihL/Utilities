@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 #   This script generates a summary of BED files
 #   including mean size and total length of the capture region
 #   Script written by Chaochih Liu

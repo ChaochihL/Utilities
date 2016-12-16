@@ -29,11 +29,11 @@ writeOutFile <- function(transposedData, filename) {
 }
 
 #   Run the script
-createOutFile <- function() {
+main <- function() {
     args <- commandArgs(trailingOnly = TRUE)
     originalData <- args[1]
     formatData <- readFile(originalData)
     output <- writeOutFile(formatData, originalData)
 }
 
-createOutFile() # Run program
+main() # Run program

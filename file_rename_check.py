@@ -10,6 +10,7 @@ Meant as a check prior to running Peter Morrell's file_rename.py script.
 """
 
 import re
+import sys
 import argparse
 
 Usage="""

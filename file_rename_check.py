@@ -27,8 +27,33 @@ Usage:
     file_rename_check.py [sample_info.txt]
 """
 
+#   Print usage message if no arguments are provided
 if not sys.argv[1:]:
     print(Usage)
     exit(1)
 
+
+#   Input file should contain columns specified under Usage message
+names = sys.argv[1]
+names = 'toy_IPK_spont.txt' # test
+
+
+#   Read in file
+my_query = [] # This is our search key
+accession = [] # This is the original data
+#with open(sys.argv[1], 'r') as accn:
+with open(names, 'r') as accn: # test, use line above when done testing
+    #   Skip header line
+    for line in accn.readlines()[1:]:
+        tmp = line.split("\t")
+        accession.append((tmp[0], tmp[1], tmp[2]))
+        my_query.append((tmp[1]))
+
+
+#   Check for matching Accession_Code and Original_Name
+no_match = []
+for i in my_query:
+    key = re.compile(i) # create search string
+    for a in accession:
+        key.findall(a)
 

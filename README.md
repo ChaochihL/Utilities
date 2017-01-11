@@ -10,6 +10,8 @@ This repository is a collection of generalized scripts that perform various smal
 
 - `file_rename_check.py`: Run this script prior to running [`file_rename.py` on Peter Morrell's GitHub](https://github.com/pmorrell/Utilities/blob/master/file_rename.py) to check that original and new sample names are associated with the correct sample.
 
+- `HarvEST_subset_by_chr.sh`: Takes a HarvEST SNP_BAC.txt file that has PhysPos and Chr_2016 (see `SNP_PhysPosition_Matching.R` script for merging by PhysPos) columns and subsets the data by chromosome. The script returns a new file for every subset group.
+
 - `HarvEST_to_BED.R`: Takes a HarvEST file that has PhysPos and Chr_2016 (see `SNP_PhysPosition_Matching.R` script for merging by PhysPos) info based on the new barley reference genome and creates a BED file with 4th column containing SNP ID. The output file was intented to be passed to [`bedops`](http://bedops.readthedocs.io/en/v2p4p21/index.html).
 
 - `LD_data_prep.sh`: Prior to running `LDheatmap.R`, run this script to:

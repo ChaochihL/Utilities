@@ -17,8 +17,8 @@ $0: \n\
 Usage: ./index_bam.sh [bamFile_list.txt] [ref_seq.fa] [bamFile_dir] \n\
 \n\
 where: \n\
-1. [bamFile_list]
-2. [ref_seq]
+1. [bamFile_list] is a list of bam files to be indexed
+2. [ref_seq] is the reference sequence we are using
 3. [bamFile_dir] is where our BAM files are located
 " >&2
 exit 1

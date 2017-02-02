@@ -14,12 +14,11 @@ function usage() {
     echo -e "\
 $0: \n\
 \n\
-Usage: ./index_bam.sh [bamFile_list.txt] [ref_seq.fa] [bamFile_dir] \n\
+Usage: ./index_bam.sh [bamFile_list.txt] [bamFile_dir] \n\
 \n\
 where: \n\
 1. [bamFile_list] is a list of bam files to be indexed
-2. [ref_seq] is the reference sequence we are using
-3. [bamFile_dir] is where our BAM files are located
+2. [bamFile_dir] is where our BAM files are located
 " >&2
 exit 1
 }
@@ -33,7 +32,7 @@ module load parallel
 #   Function to index bam files
 function indexBAM() {
     local BAMFile="$1"
-    local out_dir="$3"
+    local out_dir="$2"
     #   Sample name
     sampleName=`basename "${BAMFile}" .bam`
     #   Create BAI index for BAM file
@@ -45,8 +44,7 @@ export -f indexBAM
 
 #   Arguments provided by user
 BAM_LIST=$1 # list of bam files
-REF_SEQ=$2 # reference sequence we are using
-OUT_DIR=$3 # where are our BAM files located?
+OUT_DIR=$2 # where are our BAM files located?
 
 #   Do the work
-parallel indexBAM {} "${REF_SEQ}" "${OUT_DIR}" :::: "${BAM_LIST}"
+parallel indexBAM {} "${OUT_DIR}" :::: "${BAM_LIST}"

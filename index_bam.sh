@@ -10,20 +10,9 @@ set -u
 set -o pipefail
 
 #   Define usage message
-function usage() {
-    echo -e "\
-$0: \n\
-\n\
-Usage: ./index_bam.sh \n\
-\n\
-Note: The following paths to arguments will need to be hardcoded \n\
-1. [bamFile_list] is a list of bam files to be indexed
-2. [bamFile_dir] is where our BAM files are located
-" >&2
-exit 1
-}
-
-if [[ $# -lt 3 ]]; then usage; fi
+#   Note: The following paths to arguments will need to be hardcoded \n\
+    #   1. [bamFile_list] is a list of bam files to be indexed
+    #   2. [bamFile_dir] is where our BAM files are located
 
 #   Dependencies
 module load samtools

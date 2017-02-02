@@ -14,9 +14,9 @@ function usage() {
     echo -e "\
 $0: \n\
 \n\
-Usage: ./index_bam.sh [bamFile_list.txt] [bamFile_dir] \n\
+Usage: ./index_bam.sh \n\
 \n\
-where: \n\
+Note: The following paths to arguments will need to be hardcoded \n\
 1. [bamFile_list] is a list of bam files to be indexed
 2. [bamFile_dir] is where our BAM files are located
 " >&2
@@ -36,15 +36,17 @@ function indexBAM() {
     #   Sample name
     sampleName=`basename "${BAMFile}" .bam`
     #   Create BAI index for BAM file
-    samtools index -b "${out_dir}/Finished/${sampleName}.bam"
+    samtools index -b "${out_dir}/${sampleName}.bam"
 }
 
 #   Export function
 export -f indexBAM
 
 #   Arguments provided by user
-BAM_LIST=$1 # list of bam files
-OUT_DIR=$2 # where are our BAM files located?
+#   list of bam files
+BAM_LIST=/panfs/roc/scratch/liux1299/WBDC_Inversions_Project/seq_handling_parts_ref/WBDC_LianaPop/SAM_Processing/SAMtools/WBDC_LianaPop_Finished_BAM_list.txt
+#   where are our BAM files located?
+OUT_DIR=/panfs/roc/scratch/liux1299/WBDC_Inversions_Project/seq_handling_parts_ref/WBDC_LianaPop/SAM_Processing/SAMtools/Finished
 
 #   Do the work
 parallel indexBAM {} "${OUT_DIR}" :::: "${BAM_LIST}"

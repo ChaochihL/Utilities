@@ -42,10 +42,14 @@ function calcCoverage() {
 export -f calcCoverage
 
 #   Arguments provided by user
-BAM_FILE_LIST=$1 # list of bam files
-BAM_DIR=$2 # Directory our bamfiles are located
-REGION_FILE=$3 # Exome capture regions we are using to calculate coverage
-OUT_DIR=$4 # Where do our output files go?
+#   List of bam files
+BAM_FILE_LIST=$1
+#   Directory our bamfiles are located
+BAM_DIR=$2
+#   Exome capture regions we are using to calculate coverage
+REGION_FILE=$3
+#   Where do our output files go?
+OUT_DIR=$4
 
 #   Array of sample names
 #   This code line borrowed from sequence handling (https://github.com/MorrellLAB/sequence_handling/blob/master/Handlers/Coverage_Mapping.sh)

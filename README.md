@@ -8,6 +8,8 @@ This repository is a collection of generalized scripts that perform various smal
 
 - `bed_file_summary.R`: Provides mean, five number summary and total length of capture region size of a BED file.
 
+- `coverage_summary.sh`: generates Min, Q1, Median, Mean, Q3, and Max coverage summaries using `bedtools` given a list of BAM files and a BED file.
+
 - `file_rename_check.py`: Run this script prior to running [`file_rename.py` on Peter Morrell's GitHub](https://github.com/pmorrell/Utilities/blob/master/file_rename.py) to check that original and new sample names are associated with the correct sample.
 
 - `HarvEST_subset_by_chr.sh`: Takes a HarvEST SNP_BAC.txt file that has PhysPos and Chr_2016 (see `SNP_PhysPosition_Matching.R` script for merging by PhysPos) columns and subsets the data by chromosome. The script returns a new file for every subset group.

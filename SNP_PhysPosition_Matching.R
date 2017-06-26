@@ -8,7 +8,7 @@
 #   Script written by Chaochih Liu
 #   July 21, 2016
 
-#   To run the script: ./SNP_Position_Matching.R <positions_file> <SNP_BAC.txt> <output_filename>
+#   To run the script: ./SNP_Position_Matching.R <positions_file> <data.csv> <output_filename>
 
 
 #   Take command line arguments

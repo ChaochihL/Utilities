@@ -3,12 +3,13 @@
 #   This script adds additional columns (physical positions and new Chr info for each SNP) to csv file based on matching SNP name.
 #   Takes three arguments:
     #   1) VCF file
-    #   2) csv file from that includes SNP name info
-    #   3) Output filename
+    #   2) data file that includes SNP name column
+    #   3) Output filename including file extension
+    #   4) File delimiter
 #   Script written by Chaochih Liu
 #   July 21, 2016
 
-#   To run the script: ./SNP_Position_Matching.R <positions_file> <data.csv> <output_filename>
+#   To run the script: ./SNP_Position_Matching.R [vcf_file] [data] [output_filename] [file_delimiter]
 
 
 #   Take command line arguments
@@ -31,10 +32,11 @@ readVcf <- function(filename) {
     return(vcf.subset)
 }
 
-#   A function to read in SNP_BAC.txt file format
-readCsv <- function(filename) {
-    data.file <- read.csv(
+#   A function to read in data file format
+readData <- function(filename, delimiter) {
+    data.file <- read.table(
         file = filename, # passed as an argument
+        sep = delimiter, # user specifies delimiter
         header = TRUE, # First line is a header
         fill = TRUE, # Fill empty fields with NAs
         na.strings = "NA"
@@ -65,27 +67,33 @@ mergeFile <- function(physicalData, mainFile) {
 }
 
 #   A function to write data to outfile
-writeOutFile <- function(mergedData, outFilename) {
-    write.csv(
+writeOutFile <- function(mergedData, outFilename, delimiter) {
+    write.table(
         x = mergedData,
         file = outFilename,
+        sep = delimiter, # what delimiter are we using for our output file?
         quote = FALSE,
         eol = "\n",
         col.names = TRUE,
         row.names = FALSE,
-        na = "NA")
+        na = "",
+        quote = FALSE)
 }
 
 #   Driver function
 main <- function() {
+    #   User provided arguments
     vcfFile <- args[1] # vcf file
-    csvFile <- args[2] # CSV file with column of SNP names
+    dataFile <- args[2] # CSV file with column of SNP names
     outName <- args[3] # name given by user is third argument
+    file.delimiter <- "\t" # what is our file delimiter?
+    
+    #   Do the work
     physical <- readVcf(filename = vcfFile) # read in physical positions
-    maindata <- readCsv(filename = csvFile) # read in main csv
+    maindata <- readData(filename = dataFile, delimiter = file.delimiter) # read in main file
     maindata.no.x <- fixNaming(data.file = maindata) # remove 'X' at the beginning of SNP names
-    merged <- mergeFile(physicalData = physical.no.x, mainFile = maindata.no.x) # merge physical and main csv based on matching SNP names
-    writeOutFile(mergedData = merged, outFilename = outName) # write merged data to outfile
+    merged <- mergeFile(physicalData = physical, mainFile = maindata.no.x) # merge physical and main csv based on matching SNP names
+    writeOutFile(mergedData = merged, outFilename = outName, delimiter = file.delimiter) # write merged data to outfile
 }
 
 main() # Run the program

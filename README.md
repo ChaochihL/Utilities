@@ -1,8 +1,8 @@
 # Utilities
 
-This repository is a collection of generalized scripts that perform various small tasks.
+This repository is a collection of miscellaneous scripts that perform various small tasks.
 
-===
+---
 
 ### Contains the following scripts:
 
@@ -11,6 +11,28 @@ This repository is a collection of generalized scripts that perform various smal
 - `coverage_summary.sh`: generates Min, Q1, Median, Mean, Q3, and Max coverage summaries using `bedtools` given a list of BAM files and a BED file.
 
 - `file_rename_check.py`: Run this script prior to running [`file_rename.py` on Peter Morrell's GitHub](https://github.com/pmorrell/Utilities/blob/master/file_rename.py) to check that original and new sample names are associated with the correct sample.
+
+- `get_rev_complement.py`: Takes in an `adapters.fa` file formatted as follows:
+
+```bash
+>A501_index2_i5
+AAGGTTCA
+>A502_index2_i5
+ACTTAGCA
+```
+
+And returns a file with the original adapters and adapter sequences and their reverse complement. See output example:
+
+```bash
+>A501_index2_i5
+AAGGTTCA
+>A501_index2_i5_reverse_complement
+TGAACCTT
+>A502_index2_i5
+ACTTAGCA
+>A502_index2_i5_reverse_complement
+TGCTAAGT
+```
 
 - `HarvEST_subset_by_chr.sh`: Takes a HarvEST SNP_BAC.txt file that has PhysPos and Chr_2016 (see `SNP_PhysPosition_Matching.R` script for merging by PhysPos) columns and subsets the data by chromosome. The script returns a new file for every subset group.
 

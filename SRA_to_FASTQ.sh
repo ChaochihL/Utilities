@@ -69,5 +69,5 @@ while [[ $# > 0 ]]
 
 #   SRA to Fastq
 #       -F ensures it contains only original sequence name
-#       -O is the path to output DIR
-parallel 'fastq-dump --split-files -F --gzip {} -O ${DIR}' :::: ${SRA_LIST}
+#       --outdir is the path to output DIR
+parallel 'fastq-dump --split-files -F --gzip --outdir ${DIR} {}' :::: ${SRA_LIST}

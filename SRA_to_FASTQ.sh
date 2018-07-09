@@ -20,7 +20,8 @@ Dependencies:
     1) NCBI SRA Toolkit
     2) GNU parallel
 
-Pass -h to see available options."
+Pass -h to see available options.
+"
 
 HELP="Usage:
 $0 [Option] [SRA file list] [ -d DIR ] [ -h ]

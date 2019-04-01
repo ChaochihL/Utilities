@@ -1,2 +1,11 @@
 #   Ignore error messages
 error_files/*
+
+# Ignore scratch directories
+*scratch*
+
+# Ignore mac settings file
+*.DS_Store*
+
+# Ignore JSON settings
+settings.json

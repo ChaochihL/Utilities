@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -l mem=1gb,nodes=1:ppn=4,walltime=2:00:00
+#PBS -m abe
+#PBS -M liux1299@umn.edu
+#PBS -q mesabi
+
+set -e
+set -o pipefail
+
+# This is a driver script that stores input arguments and runs bam_vs_fastq_check.sh script,
+# which calls on the check_seq_id.py script
+
+# Load required dependencies
+module load samtools_ML/1.8.0
+module load python3/3.7.1_anaconda
+
+# User provided arguments
+# List containing full filepaths to SAM or BAM files
+FILE_LIST=
+# List of accession names only. Must match part of SAM/BAM and FASTQ filename.
+ACC_LIST=
+# List of FASTQ files that correspond to SAM/BAM samples
+FASTQ_LIST=
+# Full filepath to directory to output files
+OUT_DIR=
+# Full filepath to directory that contains our scripts
+# Note: Please make sure bam_vs_fastq_check.sh and check_seq_id.py are in the same directory.
+SCRIPT_DIR=
+
+# Do the work
+

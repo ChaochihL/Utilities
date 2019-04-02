@@ -1,0 +1,20 @@
+@HD	VN:1.5	SO:coordinate
+@SQ	SN:chr1H_part1	LN:312837513
+@SQ	SN:chr2H_part1	LN:393532674
+@SQ	SN:chr3H_part1	LN:394310633
+@SQ	SN:chr4H_part1	LN:355061206
+@SQ	SN:chr5H_part1	LN:380865482
+@SQ	SN:chr6H_part1	LN:294822070
+@SQ	SN:chr7H_part1	LN:325797516
+@SQ	SN:chrUn	LN:249774706
+@SQ	SN:chr1H_part2	LN:245697919
+@SQ	SN:chr2H_part2	LN:374542350
+@SQ	SN:chr3H_part2	LN:305400481
+@SQ	SN:chr4H_part2	LN:291998952
+@SQ	SN:chr5H_part2	LN:289164678
+@SQ	SN:chr6H_part2	LN:288558443
+@SQ	SN:chr7H_part2	LN:331426484
+@RG	ID:WBDC_336	LB:WBDC_336	PL:ILLUMINA	SM:WBDC_336	
+@PG	ID:bwa	PN:bwa	VN:0.7.15-r1140	CL:bwa mem -t 8 -k 8 -w 100 -d 100 -r 1.0 -A 1 -B 4 -O 8 -E 1 -L 6 -U 9 -T  -v 3 -M  -R @RG\tID:WBDC_336\tLB:WBDC_LianaPop_WBDC_336\tPL:ILLUMINA\t\tSM:WBDC_336 /home/morrellp/liux1299/Shared/References/Reference_Sequences/Barley/Morex/barley_RefSeq_v1.0/barley_pseudomolecules_parts.fa /panfs/roc/groups/9/morrellp/shared/Projects/WBDC_inversions/sequence_handling/WBDC_LianaPop/Adapter_Trimming/WBDC_340_R1_Single_ScytheTrimmed.fastq.gz /panfs/roc/groups/9/morrellp/shared/Projects/WBDC_inversions/sequence_handling/WBDC_LianaPop/Adapter_Trimming/WBDC_340_R2_Single_ScytheTrimmed.fastq.gz
+@PG	ID:MarkDuplicates	VN:2.1.1(6a5237c0f295ddce209ee3a3a5b83a3779408b1b_1457101272)	CL:picard.sam.markduplicates.MarkDuplicates MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1000 INPUT=[/panfs/roc/scratch/liux1299/WBDC_Inversions_Project/seq_handling_parts_ref/WBDC_LianaPop/SAM_Processing/Picard/Sorted_BAM/WBDC_336_sorted.bam] OUTPUT=/panfs/roc/scratch/liux1299/WBDC_Inversions_Project/seq_handling_parts_ref/WBDC_LianaPop/SAM_Processing/Picard/Deduped_BAM/WBDC_336_deduped.bam METRICS_FILE=/panfs/roc/scratch/liux1299/WBDC_Inversions_Project/seq_handling_parts_ref/WBDC_LianaPop/SAM_Processing/Picard/Deduped_BAM/stats/WBDC_336_Duplication_Metrics.txt REMOVE_DUPLICATES=true ASSUME_SORTED=true TMP_DIR=[/panfs/roc/scratch/liux1299/seq_handling/tmp]    MAX_SEQUENCES_FOR_DISK_READ_ENDS_MAP=50000 SORTING_COLLECTION_SIZE_RATIO=0.25 REMOVE_SEQUENCING_DUPLICATES=false TAGGING_POLICY=DontTag DUPLICATE_SCORING_STRATEGY=SUM_OF_BASE_QUALITIES PROGRAM_RECORD_ID=MarkDuplicates PROGRAM_GROUP_NAME=MarkDuplicates READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json	PN:MarkDuplicates
+@PG	ID:GATK IndelRealigner	VN:3.6-0-g89b7209	CL:knownAlleles=[] targetIntervals=/panfs/roc/scratch/liux1299/WBDC_Inversions_Project/seq_handling_parts_ref/WBDC_LianaPop/LianaPop_Picard_realign.intervals LODThresholdForCleaning=1.0 out=null consensusDeterminationModel=USE_READS entropyThreshold=0.1 maxReadsInMemory=50000 maxIsizeForMovement=3000 maxPositionalMoveAllowed=200 maxConsensuses=30 maxReadsForConsensuses=120 maxReadsForRealignment=20000 noOriginalAlignmentTags=false nWayOut=_realigned.bam generate_nWayOut_md5s=false check_early=false noPGTag=false keepPGTags=false indelsFileForDebugging=null statisticsFileForDebugging=null SNPsFileForDebugging=null

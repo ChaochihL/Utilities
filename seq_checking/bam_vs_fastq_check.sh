@@ -72,7 +72,7 @@ function compare_seq_id() {
     # Note: We are not working with the entire SAM/BAM file but instead pulling out the header
     # lines and Illumina sequence identifiers to significantly reduce the amount of data we
     # have to work with.
-    samtools view -H "${aligned}" > "${SCRATCH_DIR}"/intermediates/"${accession}"_seqIDs.txt
+    samtools view -H "${aligned}" > "${SCRATCH_DIR}"/intermediates/"${accession}"_header_only.txt
     # Pull out Illumina sequence identifiers from aligned file and store in a file
     samtools view "${aligned}" | awk '{print $1}' > "${SCRATCH_DIR}"/intermediates/"${accession}"_seqIDs.txt
 

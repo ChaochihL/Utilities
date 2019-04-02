@@ -27,6 +27,8 @@ SCRIPT_DIR=
 # Full filepath to directory to output files
 OUT_DIR=
 # Full filepath to scratch directory to temporarily store intermediate files
+#   Note: This can be the same as the out directory but can be useful if you are running short
+#   on storage space but have a scratch directory that doesn't count toward your storage.
 SCRATCH_DIR=
 
 # Do the work

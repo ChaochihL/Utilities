@@ -30,7 +30,7 @@ Dependencies:
 exit 1
 }
 
-if [[ $# -lt 3 ]]; then usage; fi
+if [[ $# -lt 1 ]]; then usage; fi
 
 # User provided input arguments
 # List containing full filepaths to SAM or BAM files
@@ -45,6 +45,8 @@ OUT_DIR=$4
 # Note: Please make sure bam_vs_fastq_check.sh and check_seq_id.py are in the same directory.
 SCRIPT_DIR=$5
 
+# Check if out directory exists, if not make it
+mkdir -p "${OUT_DIR}"
 # Setup data structures
 ACC_ARRAY=($(cat "${ACC_LIST}"))
 
@@ -64,6 +66,7 @@ function compare_seq_id() {
 
     # Call on Python script to make comparisons
     # [Placeholder]
+    python3 check_seq_id.py
 }
 
 export -f compare_seq_id

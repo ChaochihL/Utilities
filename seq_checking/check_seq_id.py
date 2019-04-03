@@ -46,7 +46,7 @@ def read_aligned_header(aligned_header_file):
                 tmp_pg = line.split()
     # Pull out fastq files bwa actually aligned
     fastq_filenames = []
-    for i in range(1, len(tmp_pg)):
+    for i in range(0, len(tmp_pg)):
         if fastq_suffix in tmp_pg[i]:
             fastq_filenames.append(os.path.basename(tmp_pg[i]))
     return (fastq_filenames)
@@ -60,5 +60,39 @@ def read_aligned_seqids(aligned_seqid_file):
     with open(aligned_seqid_file, "r") as handle:
         for line in handle:
             aligned_seqids.append(line.strip('\n'))
-    return(aligned_seqids)
+    # For paired end reads, there will be duplicate seqids
+    # Get unique seqids
+    aligned_seqids_uniq = set(aligned_seqids)
+    return (aligned_seqids_uniq)
 
+
+def check_acc_names(acc, fastq_filenames):
+    """ """
+    if acc in fastq_filenames[0]:
+        acc_info = [acc, fastq_filenames[0], fastq_filenames[1], "match"]
+    else:
+        acc_info = [acc, fastq_filenames[0], fastq_filenames[1], "mismatch"]
+    return (acc_info)
+
+
+def check_seqids(acc, a_seqids):
+    """ """
+    # Check aligned seqids vs raw fastq r1 seqid
+    seqids_r1 = {}
+    for s in range(0, len(a_seqids)):
+        if a_seqids[s] in fastq_r1_dict.keys():
+            seqids_r1[a_seqids[s]] = [a_seqids[s], "match", acc]
+        else:
+            seqids_r1[a_seqids[s]] = [a_seqids[s], "mismatch", "un"]
+    # Check aligned seqids vs raw fastq r2 seqid
+    seqids_r2 = {}
+    for s in range(0, len(a_seqids)):
+        if a_seqids[s] in fastq_r2_dict.keys():
+            seqids_r2[a_seqids[s]] = [a_seqids[s], "match", acc]
+        else:
+            seqids_r2[a_seqids[s]] = [a_seqids[s], "mismatch", "un"]
+    return (seqids_r1, seqids_r2)
+
+
+def find_unseqid_origin(seqids_r1, seqids_r2):
+    """ """

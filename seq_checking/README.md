@@ -2,6 +2,8 @@
 
 This directory contains a set of scripts to check aligned (SAM/BAM) files are correct and did not get partially overwritten during the read mapping process. These scripts combined compares the Illumina sequence identifiers from the aligned file to Illumina sequence identifiers in the raw FASTQ files. If there are mismatches in sequence identifiers for the same accessions, the scripts check all other FASTQ files to find where the sequence identifier came from.
 
+**Important note:** The scripts currently assume the input FASTQ files are gzipped, we are working with paired end reads, and that BWA was used for read mapping.
+
 ---
 
 ### Usage

@@ -1,0 +1,4 @@
+/Users/chaochih/GitHub/Utilities/seq_checking/toy_data/toy_WBDC_336_R1.fastq.gz
+/Users/chaochih/GitHub/Utilities/seq_checking/toy_data/toy_WBDC_336_R2.fastq.gz
+/Users/chaochih/GitHub/Utilities/seq_checking/toy_data/toy_WBDC_340_R1.fastq.gz
+/Users/chaochih/GitHub/Utilities/seq_checking/toy_data/toy_WBDC_340_R2.fastq.gz

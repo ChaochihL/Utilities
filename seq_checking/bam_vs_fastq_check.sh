@@ -64,12 +64,13 @@ SCRATCH_DIR=$7
 
 # Check if out directories exists, if not create them
 mkdir -p "${OUT_DIR}" \
+         "${OUT_DIR}"/seqid_checks \
          "${SCRATCH_DIR}" \
          "${SCRATCH_DIR}"/intermediates
 # Because Python script uses append mode to save data to output files
 # Clean out out directory here before starting (in case there are
 # files from previous runs here)
-rm "${OUT_DIR}"/*.txt
+rm "${OUT_DIR}"/seqid_checks/*.txt
 # Setup data structures
 ACC_ARRAY=($(cat "${ACC_LIST}"))
 
@@ -111,4 +112,4 @@ export -f compare_seq_id
 
 # Do the work
 # (parallelize this part)
-parallel compare_seq_id {} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}" "${SCRATCH_DIR}" ::: "${ACC_ARRAY[@]}"
+parallel compare_seq_id {} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" ::: "${ACC_ARRAY[@]}"

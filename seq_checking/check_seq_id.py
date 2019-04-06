@@ -1,12 +1,13 @@
+#!/usr/bin/env python3
 """This script compares Illumina sequence identifiers in aligned (SAM or BAM)
 files to Illumina sequence identifiers in FASTQ files. Script outputs a table
 containing a column of sequence identifiers and info on if they come from the
 correct sample.
 
 Usage:
-python3 check_seq_id.py [accession] [aligned_header] [aligned_seqIDs]
-                        [fastq_R1] [fastq_R2] [fastq_list_fp] [fastq_suffix]
-                        [out_dir]
+./check_seq_id.py [accession] [aligned_header] [aligned_seqIDs]
+                  [fastq_R1] [fastq_R2] [fastq_list_fp] [fastq_suffix]
+                  [out_dir]
 
 Where:
 1) [accession] is a single accession name.
@@ -26,6 +27,7 @@ function that parses the aligned file header.
 
 import sys
 import os
+import argparse
 from Bio import SeqIO
 import gzip
 

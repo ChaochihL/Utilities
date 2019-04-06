@@ -252,8 +252,9 @@ def save_to_file(accession_info, seqids, outfile_name):
         # Define info lines at top of file
         out.write("#Info: " + ', '.join(accession_info) + '\n')
         out.write("#Info line describes in the following order: 1) Aligned "
-                  "accession, 2) and 3) FASTQ files aligned, 4) match/mismatch "
-                  "between accession and FASTQ file aligned." + '\n')
+                  "accession, 2) and 3) FASTQ files aligned, "
+                  "4) match/mismatch between accession and FASTQ file "
+                  "aligned." + '\n')
         out.write('\t'.join(header_line) + '\n')
         # Save seqids check to output file
         for key in seqids:

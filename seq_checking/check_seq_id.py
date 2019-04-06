@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""This script compares Illumina sequence identifiers in aligned (SAM or BAM)
-files to Illumina sequence identifiers in FASTQ files. Script outputs a table
-containing a column of sequence identifiers and info on if they come from the
-correct sample.
+"""Compares Illumina sequence identifiers in aligned (SAM or BAM) files to
+Illumina sequence identifiers in FASTQ files. Script outputs a table containing
+a column of sequence identifiers and info on if they come from the correct
+sample.
 
 Usage:
 ./check_seq_id.py [accession] [aligned_header] [aligned_seqIDs]
@@ -30,6 +30,95 @@ import os
 import argparse
 from Bio import SeqIO
 import gzip
+
+
+def parse_args():
+    """Set up argument parser to parse command line options."""
+    parser = argparse.ArgumentParser(
+        description="Check SAM/BAM vs FASTQ file sequence identifiers.",
+        add_help=True
+    )
+    # Define required arguments
+    parser.add_argument(
+        'accession',
+        metavar='acc',
+        help='A single accession name.'
+    )
+    parser.add_argument(
+        'aligned_header_file',
+        metavar='aligned_header',
+        help=('Full filepath to a file containing SAM/BAM header lines '
+              'for accession we are processing.')
+    )
+    parser.add_argument(
+        'aligned_seqIDs_file',
+        metavar='aligned_seqIDs',
+        help=('File containing Illumina sequence sequence identifiers '
+              'from the SAM/BAM file.')
+    )
+    parser.add_argument(
+        'fastq_R1_file',
+        metavar='fastq_R1',
+        help='Forward gzipped FASTQ file corresponding to accession'
+    )
+    parser.add_argument(
+        'fastq_R2_file',
+        metavar='fastq_R2',
+        help='Reverse gzipped FASTQ file corresponding to accession.'
+    )
+    parser.add_argument(
+        'fastq_list_fp',
+        metavar='fastq_list_fp',
+        help='List of full filepaths for all FASTQ files.'
+    )
+    parser.add_argument(
+        'fastq_suffix',
+        metavar='fastq_suffix',
+        help='Suffix that matches FASTQ file suffix. Ex: .fastq.gz'
+    )
+    parser.add_argument(
+        'out_dir',
+        metavar='out_dir',
+        help='Full filepath to output directory where files will be saved.'
+    )
+    # Define optional arguments
+    # So that user can only select one or the other mode of check
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument(
+        '--check-seqids',
+        action='store_true',
+        help=('Checks for mismatches between SAM/BAM and FASTQ sequence IDs. '
+              'Only tells you if there is a mismatch or not.')
+    )
+    mode.add_argument(
+        '--seqid-origin',
+        action='store_true',
+        help=('Searches through list of fastq files to find origin of '
+              'mismatched sequence IDs. Output tells you if there is a '
+              'mismatch or not and where the mismatched sequence IDs '
+              'originated. Important: only include this argument if '
+              'you want this extra search to run')
+    )
+    a = parser.parse_args()
+    return (a)
+
+
+def set_mode(args):
+    """Set the mode for which check will be run. Options are:
+    1) check-seqids: only does a check and tell you if there are mismatches.
+    2) find-seqid-origin: does a check and finds the origin of mismatched
+    seqids."""
+    arg_dict = vars(args)
+    # print(arg_dict)
+    if arg_dict['check_seqids']:
+        print('Running --check-seqids.')
+        return ('CHECK_SEQIDS')
+    elif arg_dict['seqid_origin']:
+        print('Running --seqid-origin.')
+        return ('SEQID_ORIGIN')
+    else:
+        print('No options specified, please specify')
+        return(None)
 
 
 def read_fastq(fastq_file):
@@ -172,10 +261,14 @@ def save_to_file(accession_info, seqids, outfile_name):
     return
 
 
-def main(accession, aligned_header_file, aligned_seqIDs_file,
-         fastq_R1_file, fastq_R2_file, fastq_list_fp,
-         fastq_suffix, out_dir):
-    """Driver function."""
+def driver_check_seqids(accession, aligned_header_file, aligned_seqIDs_file,
+                        fastq_R1_file, fastq_R2_file, fastq_suffix):
+    """Driver function that reads in all files necessary and checks for
+    mismatches between SAM/BAM file sequence identifiers and FASTQ file
+    sequence identifiers. Outputs from this function will only tell you
+    if there is a mismatch and which sequence identifiers have a mismatch.
+    It will not tell you where the mismatched sequence identifiers
+    originated."""
     # Expand user filepaths
     aligned_header_fp = os.path.expanduser(aligned_header_file)
     aligned_seqIDs_fp = os.path.expanduser(aligned_seqIDs_file)
@@ -194,7 +287,13 @@ def main(accession, aligned_header_file, aligned_seqIDs_file,
     # for accession we are currently working with
     seqids_r1, seqids_r2 = check_seqids(accession, aligned_seqids,
                                         fastq_r1_dict, fastq_r2_dict)
+    return(acc_info, seqids_r1, seqids_r2)
 
+
+def driver_find_seqid_origin(fastq_list_fp, seqids_r1, seqids_r2):
+    """Driver function that takes the output from driver_check_seqids()
+    and performs a search through a list of fastq files to identify
+    origin of mismatched sequence identifiers."""
     # Prep fastq lists
     fastq_r1_list, fastq_r2_list = prep_fastq_lists(fastq_list_fp)
     # For aligned seqIDs where it is not in the fastq file for the
@@ -202,15 +301,63 @@ def main(accession, aligned_header_file, aligned_seqIDs_file,
     # fastqs to find where aligned seqID came from
     seqids_r1_out = find_unseqid_origin(seqids_r1, fastq_r1_list)
     seqids_r2_out = find_unseqid_origin(seqids_r2, fastq_r2_list)
+    return(seqids_r1_out, seqids_r2_out)
 
-    # Save seqid checks to output file
-    r1_outname = out_dir + '/' + accession + "_R1_seq_id_check.txt"
-    r2_outname = out_dir + '/' + accession + "_R2_seq_id_check.txt"
-    # R1
-    save_to_file(acc_info, seqids_r1_out, r1_outname)
-    # R2
-    save_to_file(acc_info, seqids_r2_out, r2_outname)
+
+def main():
+    """Main function."""
+    args = parse_args()
+    f = set_mode(args)
+
+    # Parse user provided arguments are run requested checks
+    if f == 'CHECK_SEQIDS':
+        # Check seqid
+        acc_info, seqids_r1, seqids_r2 = driver_check_seqids(
+            args.accession,
+            args.aligned_header_file,
+            args.aligned_seqIDs_file,
+            args.fastq_R1_file,
+            args.fastq_R2_file,
+            args.fastq_suffix
+        )
+        # Save seqid checks to output file
+        r1_outname = (args.out_dir + '/' + args.accession +
+                      "_R1_seq_id_check.txt")
+        r2_outname = (args.out_dir + '/' + args.accession +
+                      "_R2_seq_id_check.txt")
+        # R1
+        save_to_file(acc_info, seqids_r1, r1_outname)
+        # R2
+        save_to_file(acc_info, seqids_r2, r2_outname)
+    elif f == 'SEQID_ORIGIN':
+        # Check seqid
+        acc_info, seqids_r1, seqids_r2 = driver_check_seqids(
+            args.accession,
+            args.aligned_header_file,
+            args.aligned_seqIDs_file,
+            args.fastq_R1_file,
+            args.fastq_R2_file,
+            args.fastq_suffix
+        )
+        # Find seqid origin
+        seqids_r1_out, seqids_r2_out = driver_find_seqid_origin(
+            args.fastq_list_fp,
+            seqids_r1,
+            seqids_r2
+        )
+        # Save seqid checks to output file
+        r1_outname = (args.out_dir + '/' + args.accession +
+                      "_R1_seq_id_check_origin.txt")
+        r2_outname = (args.out_dir + '/' + args.accession +
+                      "_R2_seq_id_check_origin.txt")
+        # R1
+        save_to_file(acc_info, seqids_r1_out, r1_outname)
+        # R2
+        save_to_file(acc_info, seqids_r2_out, r2_outname)
+    else:
+        print('Please specify which check to perform:'
+              '--check-seqids or --seqid-origin')
+        exit(1)
     return
 
-main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5],
-     sys.argv[6], sys.argv[7], sys.argv[8])
+main()

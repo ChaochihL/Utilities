@@ -4,22 +4,7 @@ Illumina sequence identifiers in FASTQ files. Script outputs a table containing
 a column of sequence identifiers and info on if they come from the correct
 sample.
 
-Usage:
-./check_seq_id.py [accession] [aligned_header] [aligned_seqIDs]
-                  [fastq_R1] [fastq_R2] [fastq_list_fp] [fastq_suffix]
-                  [out_dir]
-
-Where:
-1) [accession] is a single accession name.
-2) [aligned_header] is a file containing SAM/BAM header lines for accession
-    we are processing.
-3) [aligned_seqIDs] is the full filepath to a file containing Illumina
-    sequence identifiers from the SAM/BAM file.
-4) [fastq_R1] list of full filepaths for forward gzipped fastq files.
-5) [fastq_R2] list of full filepaths for reverse gzipped fastq files.
-6) [fastq_list_fp]
-7) [fastq_suffix]
-8) [out_dir]
+For usage message, run: ./check_seq_id.py --help
 
 Note: Script assumes BWA was used for read mapping. This matters for the
 function that parses the aligned file header.

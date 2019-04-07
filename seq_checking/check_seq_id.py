@@ -164,19 +164,29 @@ def check_seqids(acc, a_seqids, fastq_r1_dict, fastq_r2_dict):
     1) seqID, 2) match/mismatch, and 3) accession"""
     # Check aligned seqids vs raw fastq r1 seqid
     seqids_r1 = {}
+    # Keep track of number of mismatches found to get proportion mismatches
+    count_r1 = 0
     for s in range(0, len(a_seqids)):
         if a_seqids[s] in fastq_r1_dict.keys():
             seqids_r1[a_seqids[s]] = [a_seqids[s], "match", acc]
         else:
             seqids_r1[a_seqids[s]] = [a_seqids[s], "mismatch", "un"]
+            count_r1 += 1
     # Check aligned seqids vs raw fastq r2 seqid
     seqids_r2 = {}
+    # Keep track of number of mismatches found to get proportion mismatches
+    count_r2 = 0
     for s in range(0, len(a_seqids)):
         if a_seqids[s] in fastq_r2_dict.keys():
             seqids_r2[a_seqids[s]] = [a_seqids[s], "match", acc]
         else:
             seqids_r2[a_seqids[s]] = [a_seqids[s], "mismatch", "un"]
-    return (seqids_r1, seqids_r2)
+            count_r2 += 1
+    # Calculate proportion of mismatches for accession
+    prop_mismatch_r1 = count_r1/len(seqids_r1)
+    prop_mismatch_r2 = count_r2/len(seqids_r2)
+    prop_mismatch = [acc, str(prop_mismatch_r1), str(prop_mismatch_r2)]
+    return (seqids_r1, seqids_r2, prop_mismatch)
 
 
 def prep_fastq_lists(fastq_list_fp):
@@ -247,6 +257,35 @@ def save_to_file(accession_info, seqids, outfile_name):
     return
 
 
+def save_prop_mismatch(prop_mismatch, outfile_name):
+    """Save proportion mismatch for accession to a summary table.
+    This function processes one accession at a time, however specifying
+    same filename will append new accession summaries to existing file."""
+    header_line = ["#Accession", "R1_prop_mismatch", "R2_prop_mismatch"]
+    # Check if output file exists
+    tmp_exists = os.path.isfile(outfile_name)
+    if tmp_exists:
+        # Check if header line exists in file
+        tmp_file = open(outfile_name, 'r')
+        # Check first line
+        if "#Accession" not in tmp_file.readline():
+            with open(outfile_name, 'a') as out:
+                # Add header line
+                out.write('\t'.join(header_line) + '\n')
+                # Then add proportion mismatch
+                out.write('\t'.join(prop_mismatch) + '\n')
+        else:
+            with open(outfile_name, 'a') as out:
+                out.write('\t'.join(prop_mismatch) + '\n')
+    else:
+        with open(outfile_name, 'a') as out:
+            # Add header line
+            out.write('\t'.join(header_line) + '\n')
+            # Then add proportion mismatch
+            out.write('\t'.join(prop_mismatch) + '\n')
+    return
+
+
 def driver_check_seqids(accession, aligned_header_file, aligned_seqIDs_file,
                         fastq_R1_file, fastq_R2_file, fastq_suffix):
     """Driver function that reads in all files necessary and checks for
@@ -271,9 +310,13 @@ def driver_check_seqids(accession, aligned_header_file, aligned_seqIDs_file,
     acc_info = check_acc_names(accession, aligned_header)
     # Compare aligned sequence identifiers to those in raw fastq file
     # for accession we are currently working with
-    seqids_r1, seqids_r2 = check_seqids(accession, aligned_seqids,
-                                        fastq_r1_dict, fastq_r2_dict)
-    return(acc_info, seqids_r1, seqids_r2)
+    seqids_r1, seqids_r2, prop_mismatch = check_seqids(
+        accession,
+        aligned_seqids,
+        fastq_r1_dict,
+        fastq_r2_dict
+    )
+    return(acc_info, seqids_r1, seqids_r2, prop_mismatch)
 
 
 def driver_find_seqid_origin(fastq_list_fp, seqids_r1, seqids_r2):
@@ -295,10 +338,10 @@ def main():
     args = parse_args()
     f = set_mode(args)
 
-    # Parse user provided arguments are run requested checks
+    # Parse user provided arguments and run requested checks
     if f == 'CHECK_SEQIDS':
         # Check seqid
-        acc_info, seqids_r1, seqids_r2 = driver_check_seqids(
+        acc_info, seqids_r1, seqids_r2, prop_mismatch = driver_check_seqids(
             args.accession,
             args.aligned_header_file,
             args.aligned_seqIDs_file,
@@ -306,6 +349,10 @@ def main():
             args.fastq_R2_file,
             args.fastq_suffix
         )
+        # Save proportion mismatches summary to output file
+        summary_outname = (args.out_dir + '/' +
+                           "all_accessions_prop_mismatch.txt")
+        save_prop_mismatch(prop_mismatch, summary_outname)
         # Save seqid checks to output file
         r1_outname = (args.out_dir + '/' + args.accession +
                       "_R1_seq_id_check.txt")
@@ -317,7 +364,7 @@ def main():
         save_to_file(acc_info, seqids_r2, r2_outname)
     elif f == 'SEQID_ORIGIN':
         # Check seqid
-        acc_info, seqids_r1, seqids_r2 = driver_check_seqids(
+        acc_info, seqids_r1, seqids_r2, prop_mismatch = driver_check_seqids(
             args.accession,
             args.aligned_header_file,
             args.aligned_seqIDs_file,
@@ -325,6 +372,10 @@ def main():
             args.fastq_R2_file,
             args.fastq_suffix
         )
+        # Save proportion mismatches summary to output file
+        summary_outname = (args.out_dir + '/' +
+                           "all_accessions_prop_mismatch.txt")
+        save_prop_mismatch(prop_mismatch, summary_outname)
         # Find seqid origin
         seqids_r1_out, seqids_r2_out = driver_find_seqid_origin(
             args.fastq_list_fp,

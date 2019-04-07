@@ -35,6 +35,15 @@ OUT_DIR=
 #   Note: This can be the same as the out directory but can be useful if you are running short
 #   on storage space but have a scratch directory that doesn't count toward your storage.
 SCRATCH_DIR=
+# Which check should we run?
+# Valid options: 'CHECK_SEQID', 'FIND_SEQID_ORIGIN'
+# 'CHECK_SEQID' outputs a summary of proportion mismatch for each accession and files
+#   that tell you which sequence identifers matched/mismatched between SAM/BAM file and
+#   fastq file.
+# 'FIND_SEQID_ORIGIN' does the same as 'CHECK_SEQID' but adds an additional search to
+#   find the origin of the mismatched sequence identifiers. This can be informative
+#   if there are any file name mixups.
+CHECK_MODE=$8
 
 # Do the work
 "${SCRIPT_DIR}"/bam_vs_fastq_check.sh "${ALIGNED_LIST}" \
@@ -43,4 +52,5 @@ SCRATCH_DIR=
     "${FASTQ_SUFFIX}" \
     "${SCRIPT_DIR}" \
     "${OUT_DIR}" \
-    "${SCRATCH_DIR}"
+    "${SCRATCH_DIR}" \
+    "${CHECK_MODE}"

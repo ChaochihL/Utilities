@@ -12,7 +12,8 @@ This script calls on a Python script, check_seq_id.py, to verify the correctness
 file contents. It does this by comparing Illumina sequence identifiers present in the
 SAM/BAM file to sequence identifiers in the FASTQ files. \n\
 \n\
-Usage: ./bam_vs_fastq_check.sh [aligned_list] [accession_names_list] [fastq_file_list] [fastq_suffix] [script_dir] [out_dir] [scratch_dir]\n\
+Usage: ./bam_vs_fastq_check.sh [aligned_list] [accession_names_list] [fastq_file_list] [fastq_suffix] [script_dir] [out_dir]
+    [scratch_dir] [check_mode] \n\
 \n\
 NOTE: arguments must be provided in this order! \n\
 \n\
@@ -31,6 +32,7 @@ where: \n\
 7. [scratch_dir] is the full filepath to where we want to store intermediate files. This
     can be the same as the [out_dir] but comes in handy since intermediate files can
     take up lots of storage space. \n\
+8. [check_mode] which check are we running? Valid options are: 'CHECK_SEQIDS', 'SEQID_ORIGIN' \n\
 
 Dependencies:
 - Python3: >v3.7
@@ -61,6 +63,15 @@ OUT_DIR=$6
 #   Note: This can be the same as the out directory but can be useful if you are running short
 #   on storage space but have a scratch directory that doesn't count toward your storage.
 SCRATCH_DIR=$7
+# Which check should we run?
+# Valid options: 'CHECK_SEQIDS', 'SEQID_ORIGIN'
+# 'CHECK_SEQIDS' outputs a summary of proportion mismatch for each accession and files
+#   that tell you which sequence identifers matched/mismatched between SAM/BAM file and
+#   fastq file.
+# 'SEQID_ORIGIN' does the same as 'CHECK_SEQIDS' but adds an additional search to
+#   find the origin of the mismatched sequence identifiers. This can be informative
+#   if there are any file name mixups.
+CHECK_MODE=$8
 
 # Check if out directories exists, if not create them
 mkdir -p "${OUT_DIR}" \
@@ -82,6 +93,7 @@ function compare_seq_id() {
     local script_dir=$5
     local out_dir=$6
     local scratch_dir=$7
+    local check_mode=$8
     # Pull out aligned sample we are currently working with
     aligned=$(awk -v pat="${accession}" '$1 ~ pat {print}' ${aligned_list})
     # Pull out filepaths for forward and reverse reads for sample we are currently working with
@@ -96,20 +108,37 @@ function compare_seq_id() {
     # Pull out Illumina sequence identifiers from aligned file and store in a file
     samtools view "${aligned}" | awk '{print $1}' > "${scratch_dir}"/intermediates/"${accession}"_seqIDs.txt
 
-    # Call on Python script to make comparisons
-    # [Placeholder]
-    python3 "${script_dir}"/check_seq_id.py "${accession}" \
-        "${scratch_dir}"/intermediates/"${accession}"_header_only.txt \
-        "${scratch_dir}"/intermediates/"${accession}"_seqIDs.txt \
-        "${fastq_fwd}" \
-        "${fastq_rev}" \
-        "${fastq_list}" \
-        "${fastq_suffix}" \
-        "${out_dir}"
+    if [ "${check_mode}" == 'CHECK_SEQIDS' ]
+    then
+        # Call on Python script to make comparisons
+        python3 "${script_dir}"/check_seq_id.py --check-seqids \
+            "${accession}" \
+            "${scratch_dir}"/intermediates/"${accession}"_header_only.txt \
+            "${scratch_dir}"/intermediates/"${accession}"_seqIDs.txt \
+            "${fastq_fwd}" \
+            "${fastq_rev}" \
+            "${fastq_list}" \
+            "${fastq_suffix}" \
+            "${out_dir}"
+    elif [ "${check_mode}" == 'SEQID_ORIGIN' ]
+    then
+        # Call on Python script to make comparisons
+        python3 "${script_dir}"/check_seq_id.py --seqid-origin \
+            "${accession}" \
+            "${scratch_dir}"/intermediates/"${accession}"_header_only.txt \
+            "${scratch_dir}"/intermediates/"${accession}"_seqIDs.txt \
+            "${fastq_fwd}" \
+            "${fastq_rev}" \
+            "${fastq_list}" \
+            "${fastq_suffix}" \
+            "${out_dir}"
+    else
+        echo "Please check that input argument for CHECK_MODE is spelled correctly and is in all caps. Valid options are: 'CHECK_SEQIDS', 'SEQID_ORIGIN'."
+    fi
 }
 
 export -f compare_seq_id
 
 # Do the work
 # (parallelize this part)
-parallel compare_seq_id {} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" ::: "${ACC_ARRAY[@]}"
+parallel compare_seq_id {} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}" ::: "${ACC_ARRAY[@]}"

@@ -20,6 +20,8 @@ module load parallel
 # List containing full filepaths to SAM or BAM files
 ALIGNED_LIST=
 # List of accession names only. Must match part of SAM/BAM and FASTQ filename.
+# Tip: One way to create a list of aligned file accession names is:
+#   find $(pwd) -name "*.bam" | sort -V | sed -e 's,/path/to/aligned_dir,,' -e 's,_finished_realigned.bam,,' > prefix_accession_names.txt
 ACC_LIST=
 # List of FASTQ files that correspond to SAM/BAM samples
 FASTQ_LIST=

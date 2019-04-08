@@ -47,7 +47,9 @@ if [[ $# -lt 1 ]]; then usage; fi
 # User provided input arguments
 # List containing full filepaths to SAM or BAM files
 ALIGNED_LIST=$1
-# List of accession names only. Must match part of SAM/BAM and FASTQ filename.
+# List of aligned file accession names only. Must match part of SAM/BAM and FASTQ filename.
+# Tip: One way to create a list of aligned file accession names is:
+#   find $(pwd) -name "*.bam" | sort -V | sed -e 's,/path/to/aligned_dir,,' -e 's,_finished_realigned.bam,,' > prefix_accession_names.txt
 ACC_LIST=$2
 # List of FASTQ files that correspond to SAM/BAM samples
 FASTQ_LIST=$3

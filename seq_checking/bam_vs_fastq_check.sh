@@ -104,7 +104,7 @@ function compare_seq_id() {
     # Pull out Illumina sequence identifiers from aligned file and store in a file
     samtools view "${aligned}" | awk '{print $1}' > "${scratch_dir}"/intermediates/"${accession}"_seqIDs.txt
 
-    if [ "${check_mode}" == 'CHECK_SEQIDS' ]
+    if [ "${check_mode}" == "CHECK_SEQIDS" ]
     then
         # Call on Python script to make comparisons
         python3 "${script_dir}"/check_seq_id.py --check-seqids \
@@ -116,7 +116,7 @@ function compare_seq_id() {
             "${fastq_list}" \
             "${fastq_suffix}" \
             "${out_dir}"
-    elif [ "${check_mode}" == 'SEQID_ORIGIN' ]
+    elif [ "${check_mode}" == "SEQID_ORIGIN" ]
     then
         # Call on Python script to make comparisons
         python3 "${script_dir}"/check_seq_id.py --seqid-origin \

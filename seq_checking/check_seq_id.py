@@ -27,7 +27,7 @@ def parse_args():
     parser.add_argument(
         'accession',
         metavar='acc',
-        help='A single accession name.'
+        help='A single accession name from aligned file.'
     )
     parser.add_argument(
         'aligned_header_file',

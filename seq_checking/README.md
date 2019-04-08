@@ -26,6 +26,7 @@ qsub driver_check_aligned_vs_fastq.job
 
 ### Dependencies
 - Python 3 v3.7 or later (specific libraries below)
+    - argparse
     - sys
     - os
     - Biopython

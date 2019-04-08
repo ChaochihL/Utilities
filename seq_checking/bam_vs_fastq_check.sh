@@ -139,4 +139,8 @@ export -f compare_seq_id
 
 # Do the work
 # (parallelize this part)
-parallel compare_seq_id {} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}" ::: "${ACC_ARRAY[@]}"
+#parallel compare_seq_id {} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}" ::: "${ACC_ARRAY[@]}"
+for a in "${ACC_ARRAY[@]}"
+do
+    compare_seq_id ${a} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}"
+done

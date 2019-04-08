@@ -43,7 +43,7 @@ SCRATCH_DIR=
 # 'FIND_SEQID_ORIGIN' does the same as 'CHECK_SEQID' but adds an additional search to
 #   find the origin of the mismatched sequence identifiers. This can be informative
 #   if there are any file name mixups.
-CHECK_MODE=$8
+CHECK_MODE=
 
 # Do the work
 "${SCRIPT_DIR}"/bam_vs_fastq_check.sh "${ALIGNED_LIST}" \

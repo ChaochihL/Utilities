@@ -19,7 +19,7 @@ NOTE: arguments must be provided in this order! \n\
 \n\
 where: \n\
 1. [aligned_list] is a list of full filepaths to SAM/BAM files \n\
-2. [accession_names_list] is a list of accession names separated by newline (one per line).
+2. [accession_names_list] is a list of aligned file accession names separated by newline (one per line).
     Important: Make sure names (including case) matches names in [aligned_list].
     Ex: aligned filename is WBDC_336_realigned.bam, the accession name should
     then be 'WBDC_336'. \n\

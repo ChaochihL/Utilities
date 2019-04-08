@@ -78,10 +78,6 @@ mkdir -p "${OUT_DIR}" \
          "${OUT_DIR}"/seqid_checks \
          "${SCRATCH_DIR}" \
          "${SCRATCH_DIR}"/intermediates
-# Because Python script uses append mode to save data to output files
-# Clean out out directory here before starting (in case there are
-# files from previous runs here)
-rm "${OUT_DIR}"/seqid_checks/*.txt
 # Setup data structures
 ACC_ARRAY=($(cat "${ACC_LIST}"))
 

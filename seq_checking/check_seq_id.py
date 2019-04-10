@@ -351,7 +351,8 @@ def main():
         )
         # Save proportion mismatches summary to output file
         summary_outname = (args.out_dir + '/' +
-                           "all_accessions_prop_mismatch.txt")
+						   "temp_" + args.accession +
+                           "_prop_mismatch.txt")
         save_prop_mismatch(prop_mismatch, summary_outname)
         # Save seqid checks to output file
         r1_outname = (args.out_dir + '/' + args.accession +
@@ -374,7 +375,8 @@ def main():
         )
         # Save proportion mismatches summary to output file
         summary_outname = (args.out_dir + '/' +
-                           "all_accessions_prop_mismatch.txt")
+						   "temp_" + args.accession +
+                           "_prop_mismatch.txt")
         save_prop_mismatch(prop_mismatch, summary_outname)
         # Find seqid origin
         seqids_r1_out, seqids_r2_out = driver_find_seqid_origin(

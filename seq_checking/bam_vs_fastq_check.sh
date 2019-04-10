@@ -50,7 +50,8 @@ ALIGNED_LIST=$1
 # List of aligned file accession names only. Must match part of SAM/BAM and FASTQ filename.
 # Tip: One way to create a list of aligned file accession names is:
 #   find $(pwd) -name "*.bam" | sort -V | sed -e 's,/path/to/aligned_dir,,' -e 's,_finished_realigned.bam,,' > prefix_accession_names.txt
-ACC_LIST=$2
+#ACC_LIST=$2
+ACCESSION=$2
 # List of FASTQ files that correspond to SAM/BAM samples
 FASTQ_LIST=$3
 # FASTQ files suffix (e.g., .fastq.gz)
@@ -79,9 +80,10 @@ CHECK_MODE=$8
 mkdir -p "${OUT_DIR}" \
          "${OUT_DIR}"/seqid_checks \
          "${SCRATCH_DIR}" \
-         "${SCRATCH_DIR}"/intermediates
+         "${SCRATCH_DIR}"/intermediates #\
+		 #"${SCRATCH_DIR}"/intermediates/tmp_cache
 # Setup data structures
-ACC_ARRAY=($(cat "${ACC_LIST}"))
+#ACC_ARRAY=($(cat "${ACC_LIST}"))
 
 function compare_seq_id() {
     local accession=$1
@@ -138,9 +140,7 @@ function compare_seq_id() {
 export -f compare_seq_id
 
 # Do the work
-# (parallelize this part)
-#parallel compare_seq_id {} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}" ::: "${ACC_ARRAY[@]}"
-for a in "${ACC_ARRAY[@]}"
-do
-    compare_seq_id ${a} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}"
-done
+compare_seq_id "${ACCESSION}" "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}"
+
+
+#parallel --tmpdir "${SCRATCH_DIR}"/intermediates/tmp_cache compare_seq_id {} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}" ::: "${ACC_ARRAY[@]}"

@@ -247,8 +247,16 @@ def find_unseqid_origin(acc_info, seqids, fastq_list):
             start_fq = []
             # Pull out fastq filepath to start search with
             for fp in fastq_list:
-                if fq_intersect[0] in fp:
+                if len(fq_intersect) == 0:
+                    # This part assumes underscore separates accession names
+                    # i.e., WBDC_028
+                    tmp = os.path.basename(fp)
+                    if re.search(aligned_fq[1], tmp):
+                        start_fq.append(fp)
+                elif len(fq_intersect) > 0 and fq_intersect[0] in fp:
                     start_fq.append(fp)
+                else:
+                    print("No starting fastq file.")
             with gzip.open(start_fq[0], "rt") as handle:
                 for record in SeqIO.parse(handle, "fastq"):
                     if seqids[key][2] == "un" and key == record.id:
@@ -262,7 +270,7 @@ def find_unseqid_origin(acc_info, seqids, fastq_list):
                         breaker = "found_match"
                         print("Found match, sample is: ", filename)
                         break
-
+            # Check remaining fastq files in list
             for f in range(0, len(fastq_list)):
                 # Skip processing start_fq sample and self sample
                 if (

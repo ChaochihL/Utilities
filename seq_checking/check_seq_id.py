@@ -232,9 +232,9 @@ def find_unseqid_origin(acc_info, seqids, fastq_list):
         # something like WBDC336, you may want to change the '> 1' to '> 0'.
         if len(intersection) > 1:
             fq_intersect.append('_'.join(intersection))
-            print("FASTQ file intersection: ", '_'.join(intersection))
         else:
             continue
+    print("FASTQ file intersection: ", ','.join(fq_intersect))
 
     for key in seqids:
         # Only search for aligned seqIDs that have unknown origin
@@ -270,6 +270,7 @@ def find_unseqid_origin(acc_info, seqids, fastq_list):
                     start_fq[0] not in fastq_list[f] and
                     acc_info[0] not in fastq_list[f]
                 ):
+                    print(acc_info[0], key, "not found, continue search")
                     with gzip.open(fastq_list[f], "rt") as handle:
                         for record in SeqIO.parse(handle, "fastq"):
                             if seqids[key][2] == "un" and key == record.id:
@@ -369,7 +370,7 @@ def driver_check_seqids(accession, aligned_header_file, aligned_seqIDs_file,
     return(acc_info, seqids_r1, seqids_r2, prop_mismatch)
 
 
-def driver_find_seqid_origin(fastq_list_fp, seqids_r1, seqids_r2):
+def driver_find_seqid_origin(fastq_list_fp, seqids_r1, seqids_r2, acc_info):
     """Driver function that takes the output from driver_check_seqids()
     and performs a search through a list of fastq files to identify
     origin of mismatched sequence identifiers."""
@@ -378,14 +379,17 @@ def driver_find_seqid_origin(fastq_list_fp, seqids_r1, seqids_r2):
     # For aligned seqIDs where it is not in the fastq file for the
     # sample we are currently processing, search through all other
     # fastqs to find where aligned seqID came from
-    seqids_r1_out = find_unseqid_origin(seqids_r1, fastq_r1_list)
-    seqids_r2_out = find_unseqid_origin(seqids_r2, fastq_r2_list)
+    print("Processing R1, find seqid origin")
+    seqids_r1_out = find_unseqid_origin(acc_info, seqids_r1, fastq_r1_list)
+    print("Processing R2, find seqid origin")
+    seqids_r2_out = find_unseqid_origin(acc_info, seqids_r2, fastq_r2_list)
     return(seqids_r1_out, seqids_r2_out)
 
 
 def main():
     """Main function."""
     args = parse_args()
+    print("Processing accession:", args.accession)
     f = set_mode(args)
 
     # Parse user provided arguments and run requested checks
@@ -432,7 +436,8 @@ def main():
         seqids_r1_out, seqids_r2_out = driver_find_seqid_origin(
             args.fastq_list_fp,
             seqids_r1,
-            seqids_r2
+            seqids_r2,
+            acc_info
         )
         # Save seqid checks to output file
         r1_outname = (args.out_dir + '/' + args.accession +

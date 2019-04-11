@@ -12,6 +12,7 @@ function that parses the aligned file header.
 
 import sys
 import os
+import re
 import argparse
 from Bio import SeqIO
 import gzip

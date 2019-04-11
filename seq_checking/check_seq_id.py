@@ -211,18 +211,65 @@ def prep_fastq_lists(fastq_list_fp):
     return (fastq_r1_list, fastq_r2_list)
 
 
-def find_unseqid_origin(seqids, fastq_list):
+def find_unseqid_origin(acc_info, seqids, fastq_list):
     """For each aligned seqID, search through all fastq files in list
     and find where the aligned seqID came from. Once found, change the "un"
     value to the fastq filename where aligned seqID is found in fastq file"""
+    # To reduce total number of searches performed, we will assume that
+    # the fastq file aligned (shown in aligned file header) is likely
+    # where the mismatched seqids came from. We will start our search there
+    # by first pulling out that fastq accession name.
+    aligned_fq = acc_info[1].split('_')
+    fq_intersect = []
+    for f in fastq_list:
+        tmp_fq = os.path.basename(f).split('_')
+        tmp_set = frozenset(tmp_fq)
+        # Checking for membership in a set is roughly O(1) compared to O(n)
+        # for list.
+        intersection = [x for x in aligned_fq if x in tmp_set]
+        # Note: this condition assumes that your accession names are separated
+        # by an underscore (i.e., WBDC_336). If your accession name is
+        # something like WBDC336, you may want to change the '> 1' to '> 0'.
+        if len(intersection) > 1:
+            fq_intersect.append('_'.join(intersection))
+            print("FASTQ file intersection: ", '_'.join(intersection))
+        else:
+            continue
+
     for key in seqids:
         # Only search for aligned seqIDs that have unknown origin
         if seqids[key][2] == "un":
             # Use to stop searching through remaining FASTQ files after
             # we have found where the aligned sequence identifier came from
             breaker = "not_found"
+
+            # Search through mismatched sample from aligned header first
+            start_fq = []
+            # Pull out fastq filepath to start search with
+            for fp in fastq_list:
+                if fq_intersect[0] in fp:
+                    start_fq.append(fp)
+            with gzip.open(start_fq[0], "rt") as handle:
+                for record in SeqIO.parse(handle, "fastq"):
+                    if seqids[key][2] == "un" and key == record.id:
+                        # Extract filename for where aligned seqID
+                        # matches seqID in fastq file
+                        filename = os.path.basename(start_fq[0])
+                        # Replace "un" with filename
+                        seqids[key][2] = filename
+                        # Change to "found_match" so we stop searching through
+                        # remaining fastq files
+                        breaker = "found_match"
+                        print("Found match, sample is: ", filename)
+                        break
+
             for f in range(0, len(fastq_list)):
-                if breaker == "not_found":
+                # Skip processing start_fq sample and self sample
+                if (
+                    breaker == "not_found" and
+                    start_fq[0] not in fastq_list[f] and
+                    acc_info[0] not in fastq_list[f]
+                ):
                     with gzip.open(fastq_list[f], "rt") as handle:
                         for record in SeqIO.parse(handle, "fastq"):
                             if seqids[key][2] == "un" and key == record.id:
@@ -234,7 +281,10 @@ def find_unseqid_origin(seqids, fastq_list):
                                 # Change to "found_match" so we stop searching
                                 # through remaining fastq files
                                 breaker = "found_match"
+                                print("Found match, sample is: ", filename)
                                 break
+                else:
+                    continue
         else:
             continue
     return (seqids)
@@ -351,7 +401,7 @@ def main():
         )
         # Save proportion mismatches summary to output file
         summary_outname = (args.out_dir + '/' +
-						   "temp_" + args.accession +
+                           "temp_" + args.accession +
                            "_prop_mismatch.txt")
         save_prop_mismatch(prop_mismatch, summary_outname)
         # Save seqid checks to output file
@@ -375,7 +425,7 @@ def main():
         )
         # Save proportion mismatches summary to output file
         summary_outname = (args.out_dir + '/' +
-						   "temp_" + args.accession +
+                           "temp_" + args.accession +
                            "_prop_mismatch.txt")
         save_prop_mismatch(prop_mismatch, summary_outname)
         # Find seqid origin

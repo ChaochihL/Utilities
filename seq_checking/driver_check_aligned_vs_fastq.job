@@ -58,6 +58,8 @@ declare -a ACC_ARRAY=($(cat "${ACC_LIST}"))
     "${ACC_ARRAY[${PBS_ARRAYID}]}" \
     "${FASTQ_LIST}" \
     "${FASTQ_SUFFIX}" \
+    "${FWD_NAMING}" \
+    "${REV_NAMING}" \
     "${SCRIPT_DIR}" \
     "${OUT_DIR}" \
     "${SCRATCH_DIR}" \

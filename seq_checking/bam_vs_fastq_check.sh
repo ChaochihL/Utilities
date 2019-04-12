@@ -144,4 +144,4 @@ function compare_seq_id() {
 export -f compare_seq_id
 
 # Do the work
-compare_seq_id "${ACCESSION}" "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}"
+compare_seq_id "${ACCESSION}" "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${FWD_NAMING}" "${REV_NAMING}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}"

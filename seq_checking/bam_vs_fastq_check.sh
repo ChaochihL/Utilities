@@ -12,8 +12,7 @@ This script calls on a Python script, check_seq_id.py, to verify the correctness
 file contents. It does this by comparing Illumina sequence identifiers present in the
 SAM/BAM file to sequence identifiers in the FASTQ files. \n\
 \n\
-Usage: ./bam_vs_fastq_check.sh [aligned_list] [accession_names_list] [fastq_file_list] [fastq_suffix] [script_dir] [out_dir]
-    [scratch_dir] [check_mode] \n\
+Usage: ./bam_vs_fastq_check.sh [aligned_list] [accession] [fastq_file_list] [fastq_suffix] [fwd_naming] [rev_naming] [script_dir] [out_dir] [scratch_dir] [check_mode] \n\
 \n\
 NOTE: arguments must be provided in this order! \n\
 \n\
@@ -26,13 +25,15 @@ where: \n\
 3. [fastq_file_list] is a list of full filepaths to the raw FASTQ files used to generate
     SAM/BAM files. \n\
 4. [fastq_suffix] is the suffix that matches raw FASTQ files (e.g., '.fastq.gz' or '.fq.gz') \n\
-5. [script_dir] is the full filepath to where this script, bam_vs_fastq_check.sh, and the
+5. [fwd_naming] \n\
+6. [rev_naming] \n\
+7. [script_dir] is the full filepath to where this script, bam_vs_fastq_check.sh, and the
     Python script, check_seq_id.py, are located. Please keep them in the same directory. \n\
-6. [out_dir] is the full filepath to where we output our files. \n\
-7. [scratch_dir] is the full filepath to where we want to store intermediate files. This
+8. [out_dir] is the full filepath to where we output our files. \n\
+9. [scratch_dir] is the full filepath to where we want to store intermediate files. This
     can be the same as the [out_dir] but comes in handy since intermediate files can
     take up lots of storage space. \n\
-8. [check_mode] which check are we running? Valid options are: 'CHECK_SEQIDS', 'SEQID_ORIGIN' \n\
+10. [check_mode] which check are we running? Valid options are: 'CHECK_SEQIDS', 'SEQID_ORIGIN' \n\
 
 Dependencies:
 - Python3: >v3.7
@@ -54,15 +55,19 @@ FASTQ_LIST=$3
 # FASTQ files suffix (e.g., .fastq.gz)
 # Note: This must match the suffix used in the FASTQ_LIST
 FASTQ_SUFFIX=$4
+# Specify forward and reverse read naming convention
+# Ex: "_R1.fastq.gz" and "_R2.fastq.gz"
+FWD_NAMING=$5
+REV_NAMING=$6
 # Full filepath to directory that contains our scripts
 # Note: Please make sure bam_vs_fastq_check.sh and check_seq_id.py are in the same directory.
-SCRIPT_DIR=$5
+SCRIPT_DIR=$7
 # Full filepath to directory to output files
-OUT_DIR=$6
+OUT_DIR=$8
 # Full filepath to scratch directory to temporarily store intermediate files
 #   Note: This can be the same as the out directory but can be useful if you are running short
 #   on storage space but have a scratch directory that doesn't count toward your storage.
-SCRATCH_DIR=$7
+SCRATCH_DIR=$9
 # Which check should we run?
 # Valid options: 'CHECK_SEQIDS', 'SEQID_ORIGIN'
 # 'CHECK_SEQIDS' outputs a summary of proportion mismatch for each accession and files
@@ -71,7 +76,7 @@ SCRATCH_DIR=$7
 # 'SEQID_ORIGIN' does the same as 'CHECK_SEQIDS' but adds an additional search to
 #   find the origin of the mismatched sequence identifiers. This can be informative
 #   if there are any file name mixups.
-CHECK_MODE=$8
+CHECK_MODE=${10}
 
 # Check if out directories exists, if not create them
 mkdir -p "${OUT_DIR}" \
@@ -87,15 +92,17 @@ function compare_seq_id() {
     local aligned_list=$2
     local fastq_list=$3
     local fastq_suffix=$4
-    local script_dir=$5
-    local out_dir=$6
-    local scratch_dir=$7
-    local check_mode=$8
+    local fwd_naming=$5
+    local rev_naming=$6
+    local script_dir=$7
+    local out_dir=$8
+    local scratch_dir=$9
+    local check_mode=${10}
     # Pull out aligned sample we are currently working with
     aligned=$(awk -v pat="${accession}" '$1 ~ pat {print}' ${aligned_list})
     # Pull out filepaths for forward and reverse reads for sample we are currently working with
-    fastq_fwd=$(awk -v pat="${accession}" '$1 ~ pat {print}' ${fastq_list} | grep "R1")
-    fastq_rev=$(awk -v pat="${accession}" '$1 ~ pat {print}' ${fastq_list} | grep "R2")
+    fastq_fwd=$(awk -v pat="${accession}" '$1 ~ pat {print}' ${fastq_list} | grep ${fwd_naming})
+    fastq_rev=$(awk -v pat="${accession}" '$1 ~ pat {print}' ${fastq_list} | grep ${rev_naming})
 
     # Pull out header lines from aligned file and store in file
     # Note: We are not working with the entire SAM/BAM file but instead pulling out the header

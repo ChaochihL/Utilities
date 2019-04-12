@@ -27,6 +27,10 @@ FASTQ_LIST=
 # FASTQ files suffix (e.g., .fastq.gz)
 # Note: This must match the suffix used in the FASTQ_LIST
 FASTQ_SUFFIX=
+# Specify forward and reverse read naming convention
+# Ex: "_R1.fastq.gz" and "_R2.fastq.gz"
+FWD_NAMING=$5
+REV_NAMING=$6
 # Full filepath to directory that contains our scripts
 # Note: Please make sure bam_vs_fastq_check.sh and check_seq_id.py are in the same directory.
 SCRIPT_DIR=

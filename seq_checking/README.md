@@ -14,18 +14,13 @@ There are two modes to run in: 1) `CHECK_SEQIDS` and 2) `SEQID_ORIGIN`.
 'CHECK_SEQIDS' outputs a summary of proportion mismatch for each accession and files that tell you which sequence identifers matched/mismatched between SAM/BAM file and fastq file.
 'SEQID_ORIGIN' does the same as 'CHECK_SEQID' but adds an additional search to find the origin of the mismatched sequence identifiers. This can be informative if there are any file name mixups.
 
-After filling out the driver script, run one of the following:
+After filling out the driver script, run the following:
 
 ```bash
-# Interactive
-./driver_check_aligned_vs_fastq.job
-```
-
-or
-
-```bash
-# Submit as job to PBS HPC system
-qsub driver_check_aligned_vs_fastq.job
+# Submit as job array to PBS HPC system
+# Where "n" is: the maximum number of samples in ACC_LIST - 1
+# Ex: If you have 24 accessions in ACC_LIST your range would be 0-23
+qsub -t 0-n driver_check_aligned_vs_fastq.job
 ```
 
 ### Dependencies

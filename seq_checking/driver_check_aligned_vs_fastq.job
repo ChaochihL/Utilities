@@ -48,11 +48,16 @@ SCRATCH_DIR=
 CHECK_MODE=
 
 # Do the work
+# Define array
+declare -a ACC_ARRAY=($(cat "${ACC_LIST}"))
+
 "${SCRIPT_DIR}"/bam_vs_fastq_check.sh "${ALIGNED_LIST}" \
-    "${ACC_LIST}" \
+    "${ACC_ARRAY[${PBS_ARRAYID}]}" \
     "${FASTQ_LIST}" \
     "${FASTQ_SUFFIX}" \
     "${SCRIPT_DIR}" \
     "${OUT_DIR}" \
     "${SCRATCH_DIR}" \
     "${CHECK_MODE}"
+
+cat "${OUT_DIR}"/seqid_checks/temp_*_prop_mismatch.txt | sort -u > "${OUT_DIR}"/seqid_checks/all_accessions_prop_mismatch.txt

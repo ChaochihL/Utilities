@@ -10,6 +10,10 @@ This directory contains a set of scripts to check aligned (SAM/BAM) files are co
 
 Fill out filepaths to input arguments in the `driver_check_aligned_vs_fastq.job` script. This script then calls the `bam_vs_fastq_check.sh` script, which calls the `check_seq_id.py` script.
 
+There are two modes to run in: 1) `CHECK_SEQIDS` and 2) `SEQID_ORIGIN`.
+'CHECK_SEQIDS' outputs a summary of proportion mismatch for each accession and files that tell you which sequence identifers matched/mismatched between SAM/BAM file and fastq file.
+'SEQID_ORIGIN' does the same as 'CHECK_SEQID' but adds an additional search to find the origin of the mismatched sequence identifiers. This can be informative if there are any file name mixups.
+
 After filling out the driver script, run one of the following:
 
 ```bash

@@ -19,7 +19,7 @@ NOTE: arguments must be provided in this order! \n\
 \n\
 where: \n\
 1. [aligned_list] is a list of full filepaths to SAM/BAM files \n\
-2. [accession_names_list] is a list of aligned file accession names separated by newline (one per line).
+2. [accession] is a single accession names.
     Important: Make sure names (including case) matches names in [aligned_list].
     Ex: aligned filename is WBDC_336_realigned.bam, the accession name should
     then be 'WBDC_336'. \n\
@@ -47,10 +47,7 @@ if [[ $# -lt 1 ]]; then usage; fi
 # User provided input arguments
 # List containing full filepaths to SAM or BAM files
 ALIGNED_LIST=$1
-# List of aligned file accession names only. Must match part of SAM/BAM and FASTQ filename.
-# Tip: One way to create a list of aligned file accession names is:
-#   find $(pwd) -name "*.bam" | sort -V | sed -e 's,/path/to/aligned_dir,,' -e 's,_finished_realigned.bam,,' > prefix_accession_names.txt
-#ACC_LIST=$2
+# One accession name. Must match part of SAM/BAM and FASTQ filename.
 ACCESSION=$2
 # List of FASTQ files that correspond to SAM/BAM samples
 FASTQ_LIST=$3
@@ -141,6 +138,3 @@ export -f compare_seq_id
 
 # Do the work
 compare_seq_id "${ACCESSION}" "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}"
-
-
-#parallel --tmpdir "${SCRATCH_DIR}"/intermediates/tmp_cache compare_seq_id {} "${ALIGNED_LIST}" "${FASTQ_LIST}" "${FASTQ_SUFFIX}" "${SCRIPT_DIR}" "${OUT_DIR}"/seqid_checks "${SCRATCH_DIR}" "${CHECK_MODE}" ::: "${ACC_ARRAY[@]}"

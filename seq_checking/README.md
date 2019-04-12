@@ -33,8 +33,8 @@ qsub driver_check_aligned_vs_fastq.job
     - argparse
     - sys
     - os
+    - re
     - Biopython
     - gzip
 - Samtools v1.8.0 or later
-- GNU Parallel
 

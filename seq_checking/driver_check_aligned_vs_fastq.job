@@ -13,7 +13,6 @@ set -o pipefail
 # Load required dependencies
 module load samtools_ML/1.8.0
 module load python3/3.7.1_anaconda
-module load parallel
 
 # User provided input arguments
 # Please fill out filepaths below

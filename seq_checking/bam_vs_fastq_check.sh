@@ -111,6 +111,8 @@ function compare_seq_id() {
     samtools view -H "${aligned}" > "${scratch_dir}"/intermediates/"${accession}"_header_only.txt
     # Pull out Illumina sequence identifiers from aligned file and store in a file
     samtools view "${aligned}" | awk '{print $1}' > "${scratch_dir}"/intermediates/"${accession}"_seqIDs.txt
+    # Sort aligned file seqids
+    sort -Vu "${scratch_dir}"/intermediates/"${accession}"_seqIDs.txt > "${scratch_dir}"/intermediates/"${accession}"_seqIDs_sorted.txt
 
     if [ "${check_mode}" == "CHECK_SEQIDS" ]
     then
@@ -118,7 +120,7 @@ function compare_seq_id() {
         python3 "${script_dir}"/check_seq_id.py --check-seqids \
             "${accession}" \
             "${scratch_dir}"/intermediates/"${accession}"_header_only.txt \
-            "${scratch_dir}"/intermediates/"${accession}"_seqIDs.txt \
+            "${scratch_dir}"/intermediates/"${accession}"_seqIDs_sorted.txt \
             "${fastq_fwd}" \
             "${fastq_rev}" \
             "${fastq_list}" \
@@ -130,7 +132,7 @@ function compare_seq_id() {
         python3 "${script_dir}"/check_seq_id.py --seqid-origin \
             "${accession}" \
             "${scratch_dir}"/intermediates/"${accession}"_header_only.txt \
-            "${scratch_dir}"/intermediates/"${accession}"_seqIDs.txt \
+            "${scratch_dir}"/intermediates/"${accession}"_seqIDs_sorted.txt \
             "${fastq_fwd}" \
             "${fastq_rev}" \
             "${fastq_list}" \

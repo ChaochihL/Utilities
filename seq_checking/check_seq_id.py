@@ -228,6 +228,7 @@ def find_unseqid_origin(acc_info, seqids, fastq_list):
         # Checking for membership in a set is roughly O(1) compared to O(n)
         # for list.
         intersection = [x for x in aligned_fq if x in tmp_set]
+        print("For testing: ", intersection)
         # Note: this condition assumes that your accession names are separated
         # by an underscore (i.e., WBDC_336). If your accession name is
         # something like WBDC336, you may want to change the '> 1' to '> 0'.
@@ -260,7 +261,7 @@ def find_unseqid_origin(acc_info, seqids, fastq_list):
                     print("No starting fastq file.")
             with gzip.open(start_fq[0], "rt") as handle:
                 for record in SeqIO.parse(handle, "fastq"):
-                    if seqids[key][2] == "un" and key == record.id:
+                    if key in record.id:
                         # Extract filename for where aligned seqID
                         # matches seqID in fastq file
                         filename = os.path.basename(start_fq[0])
@@ -282,7 +283,7 @@ def find_unseqid_origin(acc_info, seqids, fastq_list):
                     print(acc_info[0], key, "not found, continue search")
                     with gzip.open(fastq_list[f], "rt") as handle:
                         for record in SeqIO.parse(handle, "fastq"):
-                            if seqids[key][2] == "un" and key == record.id:
+                            if key in record.id:
                                 # Extract filename for where aligned seqID
                                 # matches seqID in fastq file
                                 filename = os.path.basename(fastq_list[f])
@@ -441,6 +442,15 @@ def main():
                            "temp_" + args.accession +
                            "_prop_mismatch.txt")
         save_prop_mismatch(prop_mismatch, summary_outname)
+        # Save seqid checks to output file
+        r1_outname = (args.out_dir + '/' + args.accession +
+                      "_R1_seq_id_check.txt")
+        r2_outname = (args.out_dir + '/' + args.accession +
+                      "_R2_seq_id_check.txt")
+        # R1
+        save_to_file(acc_info, seqids_r1, r1_outname)
+        # R2
+        save_to_file(acc_info, seqids_r2, r2_outname)
         # Find seqid origin
         seqids_r1_out, seqids_r2_out = driver_find_seqid_origin(
             args.fastq_list_fp,
@@ -449,14 +459,14 @@ def main():
             acc_info
         )
         # Save seqid checks to output file
-        r1_outname = (args.out_dir + '/' + args.accession +
-                      "_R1_seq_id_check_origin.txt")
-        r2_outname = (args.out_dir + '/' + args.accession +
-                      "_R2_seq_id_check_origin.txt")
+        r1_outname_origin = (args.out_dir + '/' + args.accession +
+                             "_R1_seq_id_check_origin.txt")
+        r2_outname_origin = (args.out_dir + '/' + args.accession +
+                             "_R2_seq_id_check_origin.txt")
         # R1
-        save_to_file(acc_info, seqids_r1_out, r1_outname)
+        save_to_file(acc_info, seqids_r1_out, r1_outname_origin)
         # R2
-        save_to_file(acc_info, seqids_r2_out, r2_outname)
+        save_to_file(acc_info, seqids_r2_out, r2_outname_origin)
     else:
         print('Please specify which check to perform:'
               '--check-seqids or --seqid-origin')

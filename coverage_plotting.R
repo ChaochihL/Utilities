@@ -13,6 +13,10 @@
 #   3) [out_dir] is the full directory to where our plots should output to.
 #       Note: Exclude the last '/' at the end of the filepath. Script adds the slash at the end.
 
+# IMPORTANT: This script assumes you have run the following command:
+#   to pull out histogram summarizing coverage among "all" features in A
+#   grep ^all ${out_dir}/Histograms/${sampleName}.hist > ${out_dir}/Histograms/${sampleName}.hist.all.txt
+
 # Code adapted from: 
 # https://www.gettinggeneticsdone.com/2014/03/visualize-coverage-exome-targeted-ngs-bedtools.html
 

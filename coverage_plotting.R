@@ -65,7 +65,7 @@ plotCoverage <- function(cov, cov_cumulative, max_depth, cols_more, labs, main_t
     }
     
     # Add a legend using the nice sample labeles rather than the full filenames.
-    legend("topright", legend=labs, col=cols_more, lty=1, lwd=4, ncol = 3, cex = 0.7)
+    legend("topright", legend=labs, col=cols_more, lty=1, lwd=4, ncol = 4, cex = 0.6)
 }
 
 main <- function() {

@@ -9,3 +9,5 @@ error_files/*
 
 # Ignore JSON settings
 settings.json
+
+*.Rhistory

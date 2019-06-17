@@ -48,6 +48,8 @@ TGCTAAGT
 
 - `random_sampler.R`: Randomly samples names/values from a given list
 
+- `rename_sra_fastq.py`: Renames files downloaded from NCBI SRA based on a lookup table that is generated from NCBI SRA Run Selector info table. Has two modes: 1) Dry run, 2) Rename files.
+
 - `SNP_PhysPosition_Matching.R`: Takes VCF file (containing physical position, SNP ID, and Chr info) and HarvEST file and adds Physical Position and Chr_2016 columns based on matching SNP names. Note: this script discards any SNPs that do not have matching SNP names.
 
 - `snpBAC_NA_filtering.R`: Removes all rows with empty cells in Query_SNP column and missing info for PhysPos column.

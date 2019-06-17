@@ -84,6 +84,7 @@ def read_table(lookup_table):
                 lt_dict[tmp[0]] = tmp[1]
     return lt_dict
 
+
 def rename_file(lt_dict, files):
     """Create paired rename list."""
     rename_dict = {}
@@ -92,6 +93,10 @@ def rename_file(lt_dict, files):
             if k in i:
                 # Create dictionary with old name and new name
                 rename_dict[i] = i.replace(k, lt_dict[k])
+            else:
+                # If there is no matching name in lookup table,
+                # keep filename the same
+                rename_dict[i] = i
     return rename_dict
 
 

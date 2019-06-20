@@ -23,7 +23,8 @@ def parse_args():
                      '1) Run/Exp/SRA ID, 2) Corresponding accession name. '
                      'The lookup table can be easily created from NCBI SRA Run Selector and downloading '
                      'the run info table. Search for NCBI SRA and enter in the BioProject ID '
-                     '(ex: PRJNA399170), then send the results to run selector.'),
+                     '(ex: PRJNA399170), then send the results to run selector. Note: Script currently '
+                     'works on entire directories and every file prefix needs to be in the lookup table.'),
         add_help=True
     )
     # Define required arguments
@@ -93,10 +94,6 @@ def rename_file(lt_dict, files):
             if k in i:
                 # Create dictionary with old name and new name
                 rename_dict[i] = i.replace(k, lt_dict[k])
-            else:
-                # If there is no matching name in lookup table,
-                # keep filename the same
-                rename_dict[i] = i
     return rename_dict
 
 

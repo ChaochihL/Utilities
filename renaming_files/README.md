@@ -9,6 +9,8 @@ This directory contains scripts used to rename samples along with some example f
 | `rename_files.py` | Renames files downloaded from NCBI SRA or any file type based on a lookup table that is generated from NCBI SRA Run Selector info table or manually generated. The script has two modes: 1) Dry run, 2) Rename files. See below for more detailed description. |
 | `deprecated/file_rename_check.py` | Run this script prior to running [`file_rename.py` on Peter Morrell's GitHub](https://github.com/pmorrell/Utilities/blob/master/file_rename.py) to check that original and new sample names are associated with the correct sample. |
 
+An example directory with filenames to test the script is located in the `toy_rename_bam` directory. I have included a few example lookup tables (two with SRA IDs and one with BAM accession names) located in the `example_lookup_tables` directory. Note: if the line starts with `#`, the script will skip it when reading in the files, so you can use the `#` to start column header lines.
+
 ### How does the `rename_files.py` script work?
 
 Below is an example dry-run for a directory with toy BAM files (note: BAM files are empty files since we only need the filename to do a test rename run). The BAM file names are in the directory called `toy_rename_bam`. The example lookup table we will use is `example_lookup_tables/toy_rename_bam_lookup_table.txt`.

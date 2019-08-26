@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Chaochih Liu - Falcon Heights, MN June 17, 2019
-"""This script renames SRA/fastq files obtained from NCBI SRA.
+"""This script renames SRA/fastq files obtained from NCBI SRA or any other type of file.
 This script takes in a tab-delimited lookup table with two columns:
     1) Run/Exp/SRA ID
     2) Corresponding accession name
@@ -18,9 +18,10 @@ import argparse
 def parse_args():
     """Set up argument parser to parse command line options."""
     parser = argparse.ArgumentParser(
-        description=('Rename SRA/fastq files obtained from NCBI SRA.'
+        description=('Rename SRA/fastq files obtained from NCBI SRA or any other type of file.'
                      'This script takes in a tab-delimited lookup table with two columns:'
-                     '1) Run/Exp/SRA ID, 2) Corresponding accession name. '
+                     '1) Old name (Run/Exp/SRA ID/Accession name excluding file '
+                     'extension), 2) New name. '
                      'The lookup table can be easily created from NCBI SRA Run Selector and downloading '
                      'the run info table. Search for NCBI SRA and enter in the BioProject ID '
                      '(ex: PRJNA399170), then send the results to run selector. Note: Script currently '

@@ -40,7 +40,7 @@ plotCoverage <- function(cov, cov_cumulative, max_depth, cols_more, labs, main_t
     plot(
         as.numeric(as.character(unlist(cov[[1]][2:max_depth, 2]))),
         as.numeric(as.character(unlist(cov_cumulative[[1]][1:max_depth-1]))),
-        type='n', xlab="Depth", ylab=expression("Fraction of capture target bases" >= "depth"),
+        type='n', xlab="Depth", ylab=expression("Fraction of bases" >= "depth"),
         ylim=c(0,1.0), main=main_title
     )
     abline(v = 20, col = "gray60")
@@ -104,7 +104,7 @@ main <- function() {
         width = 10, height = 7)
     # Plot all the way until maximum depth
     plotCoverage(cov, cov_cumulative, max_depth = length(cov[[1]]$V2), cols_more, labs,
-                 main_title = "Target Region Coverage")
+                 main_title = "Coverage")
     dev.off()
 
     # Save plot to PDF
@@ -112,7 +112,7 @@ main <- function() {
         width = 10, height = 7)
     # Plot only until depth of 120
     plotCoverage(cov, cov_cumulative, max_depth = 120, cols_more, labs,
-                 main_title = "Target Region Coverage")
+                 main_title = "Coverage")
     dev.off()
 }
 

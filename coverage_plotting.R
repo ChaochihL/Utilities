@@ -17,7 +17,7 @@
 #   to pull out histogram summarizing coverage among "all" features in A
 #   grep ^all ${out_dir}/Histograms/${sampleName}.hist > ${out_dir}/Histograms/${sampleName}.hist.all.txt
 
-# Code adapted from: 
+# Code adapted from:
 # https://www.gettinggeneticsdone.com/2014/03/visualize-coverage-exome-targeted-ngs-bedtools.html
 
 library(RColorBrewer)
@@ -40,7 +40,7 @@ plotCoverage <- function(cov, cov_cumulative, max_depth, cols_more, labs, main_t
     plot(
         as.numeric(as.character(unlist(cov[[1]][2:max_depth, 2]))),
         as.numeric(as.character(unlist(cov_cumulative[[1]][1:max_depth-1]))),
-        type='n', xlab="Depth", ylab=expression("Fraction of capture target bases" >= "depth"), 
+        type='n', xlab="Depth", ylab=expression("Fraction of capture target bases" >= "depth"),
         ylim=c(0,1.0), main=main_title
     )
     abline(v = 20, col = "gray60")
@@ -52,18 +52,18 @@ plotCoverage <- function(cov, cov_cumulative, max_depth, cols_more, labs, main_t
     axis(1, at=c(20,50,80), labels=c(20,50,80))
     axis(2, at=c(0.90), labels=c(0.90))
     axis(2, at=c(0.50), labels=c(0.50))
-    
+
     # Actually plot the data for each alignment (stored in lists)
     for (i in 1:length(cov)) {
         points(
-            as.numeric(as.character(unlist(cov[[i]][2:max_depth, 2]))), 
-            as.numeric(as.character(unlist(cov_cumulative[[i]][1:max_depth-1]))), 
-            type = 'l', 
-            lwd = 2.5, 
+            as.numeric(as.character(unlist(cov[[i]][2:max_depth, 2]))),
+            as.numeric(as.character(unlist(cov_cumulative[[i]][1:max_depth-1]))),
+            type = 'l',
+            lwd = 2.5,
             col = cols_more[[i]]
         )
     }
-    
+
     # Add a legend using the nice sample labeles rather than the full filenames.
     legend("topright", legend=labs, col=cols_more, lty=1, lwd=4, ncol = 4, cex = 0.6)
 }
@@ -75,30 +75,30 @@ main <- function() {
     hist_dir <- args[1]
     project <- args[2]
     out_dir <- args[3]
-    
+
     # Prepping filepaths
-    files <- list.files(path = hist_dir, pattern = ".hist.all.txt")
+    files <- list.files(path = hist_dir, pattern = ".hist")
     fp <- paste0(hist_dir, "/", files)
-    
+
     # Read in files and do some processing
     cov <- readHistFiles(hist_dir, fp)
-    
+
     # Get cumulative coverage for each alignment
     cov_cumulative <- list()
     for (i in 1:length(fp)) {
         cov_cumulative[[i]] <- 1-cumsum(cov[[i]][,5])
     }
-    
+
     # Prep legend labels for each sample
     sample_names <- basename(fp)
     labs <- gsub(pattern = ".hist.all.txt", replacement = "", x = sample_names)
-    
+
     # Pick some colors
     # "Dark2" color palette has a limit of 8 colors
     cols <- brewer.pal(8, "Dark2")
     # Here is a trick to add more than 8 colors
     cols_more <- colorRampPalette(cols)(length(cov))
-    
+
     # Save plot to PDF
     pdf(file = paste0(out_dir, "/", project, "_coverage_plot-maxdepth.pdf"),
         width = 10, height = 7)
@@ -106,7 +106,7 @@ main <- function() {
     plotCoverage(cov, cov_cumulative, max_depth = length(cov[[1]]$V2), cols_more, labs,
                  main_title = "Target Region Coverage")
     dev.off()
-    
+
     # Save plot to PDF
     pdf(file = paste0(out_dir, "/", project, "_coverage_plot-depth120.pdf"),
         width = 10, height = 7)

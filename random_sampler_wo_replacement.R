@@ -1,60 +1,56 @@
 #!/usr/bin/env Rscript
 
-#   This script randomly selects SNP names from a given list
-#   Script written by Chaochih Liu
-#   June 17, 2016
+# This script randomly selects SNP names from a given list
+# Currently supports reading in gzipped file
+# Chaochih Liu - June 17, 2016
 
-#   To run the script: ./random_sampler.R [number_to_sample] [sample_list.txt]
+# To run the script: ./random_sampler.R [number_to_sample] [sample_list.txt] [out_dir]
 
-#   User provided input arguments are:
-#       1) number_to_sample - how many do we want to sample?
-#       2) sample_list.txt is a file with a single column of values and NO header line
+# User provided input arguments are:
+#   [sample_list.txt] is a file with a single column of values and NO header line
+#   [number_to_sample] is how many do we want to sample?
+#   [out_dir] is the full path to where we want to output our sampling
 
-#   Read in sample list and create data frame
-readFile <- function(filename) {
-    sampleList <- read.delim(
-        file = filename,
-        header = FALSE # file does not have header, don't want 1st row to turn into header
+read_file <- function(filename) {
+    zfile <- gzfile(filename, 'rt')
+    sample_list <- read.delim(
+        file = zfile,
+        header = TRUE
     )
-    return(sampleList)
+    return(sample_list)
 }
 
-#   Random sampler
-randomSampler <- function(sampleList, numberOfDraws) {
+# Randomly sample rows from data frame
+random_sampler <- function(dat, num_draws) {
     set.seed(Sys.time())
-    randomDraws <- sort(
-        sample(
-            x = as.vector(sampleList[, 1]), # sort samples from lowest to highest number 
-            size = numberOfDraws, # Number of samples we want to draw
-            replace = FALSE
-        )
-    )
-    return(randomDraws)
+    random_draws <- dat[sample(x = nrow(dat), size = num_draws, replace = FALSE), ]
+    sorted_draws <- random_draws[order(random_draws$marker), ]
+    return(sorted_draws)
 }
 
-#   Write file to outfile
-writeOutFile <- function(randomDraws, filename, numberOfDraws) {
-    inputName <- unlist(strsplit(x = filename, split = ".txt"))
-    outputName <- paste(inputName, as.character(x = numberOfDraws), "randomSamples.txt", sep = "_")
+write_out_file <- function(random_draws, filename, num_draws, out_dir) {
+    input_name <- unlist(strsplit(basename(filename), split = ".beagle.gz"))
+    output_name <- paste(out_dir,"/",input_name,"_",as.character(x = num_draws), "_randomSamples.txt", sep = "")
     write.table(
-        x = randomDraws,
-        file = outputName,
+        x = random_draws,
+        file = output_name,
         quote = FALSE,
         sep = "\t",
         eol = "\n",
-        col.names = FALSE,
+        col.names = TRUE,
         row.names = FALSE
     )
 }
 
-#   Run the script
-runScript <- function() {
+main <- function() {
+    # Driver function
     args <- commandArgs(trailingOnly = TRUE)
-    nSelect <- as.numeric(args[1]) # Number of samples to draw
-    inputData <- args[2] # filename
-    sampleNames <- readFile(inputData)
-    samplesSelected <- randomSampler(sampleNames, nSelect)
-    writeOutFile(randomDraws = samplesSelected, filename = inputData, numberOfDraws = nSelect)
+    input_data <- args[1] # filename
+    n_select <- as.numeric(args[2]) # Number of samples to draw
+    output_dir <- args[3]
+    sample_names <- read_file(input_data)
+    samples_selected <- random_sampler(sample_names, n_select)
+    write_out_file(random_draws = samples_selected, filename = input_data, num_draws = n_select, out_dir = output_dir)
 }
 
-runScript() # Run program
+main() # Run program
